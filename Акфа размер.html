@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расчет общей площади</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/dark-mosaic.png'),
+                              url('https://www.toptal.com/designers/subtlepatterns/uploads/math-formulas.png');
+            background-blend-mode: overlay;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: white;
+        }
+        .container {
+            background: rgba(40, 40, 40, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+            text-align: center;
+        }
+        h2, h3 { color: #ddd; }
+        label { display: block; margin: 10px 0; }
+        input { padding: 8px; margin-right: 10px; border: 1px solid #666; border-radius: 5px; background: #2e2e2e; color: white; }
+        button {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover { background: #218838; }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            background: #333;
+            border-collapse: collapse;
+            color: white;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #555;
+        }
+        th { background: #007bff; }
+        p { font-weight: bold; font-size: 1.2em; color: #ddd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Расчет общей площади</h2>
+        <label>Длина (см): <input type="number" id="length"></label>
+        <label>Ширина (см): <input type="number" id="width"></label>
+        <label>Количество: <input type="number" id="quantity"></label>
+        <button onclick="addRow()">Добавить</button>
+        
+        <h3>Удалить строку</h3>
+        <label>Номер строки: <input type="number" id="deleteRow"></label>
+        <button onclick="deleteRow()">Удалить</button>
+
+        <h3>Таблица размеров и общей площади</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Длина (см)</th>
+                    <th>Ширина (см)</th>
+                    <th>Количество</th>
+                    <th>Площадь (м²)</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+        
+        <h3>Итоговая площадь</h3>
+        <p id="totalArea">0 м²</p>
+    </div>
+
+    <script>
+        let count = 0;
+        let totalArea = 0;
+        
+        function addRow() {
+            const length = parseFloat(document.getElementById("length").value);
+            const width = parseFloat(document.getElementById("width").value);
+            const quantity = parseInt(document.getElementById("quantity").value);
+            
+            if (isNaN(length) || isNaN(width) || isNaN(quantity) || length <= 0 || width <= 0 || quantity <= 0) {
+                alert("Введите корректные значения!");
+                return;
+            }
+
+            count++;
+            const area = (length * width * quantity) / 10000;
+            totalArea += area;
+            
+            const tableBody = document.getElementById("tableBody");
+            const row = tableBody.insertRow();
+            row.setAttribute("data-id", count);
+            row.insertCell(0).innerText = count;
+            row.insertCell(1).innerText = length;
+            row.insertCell(2).innerText = width;
+            row.insertCell(3).innerText = quantity;
+            row.insertCell(4).innerText = area.toFixed(2);
+            
+            document.getElementById("totalArea").innerText = totalArea.toFixed(2) + " м²";
+        }
+        
+        function deleteRow() {
+            const deleteNumber = parseInt(document.getElementById("deleteRow").value);
+            const tableBody = document.getElementById("tableBody");
+            
+            for (let i = 0; i < tableBody.rows.length; i++) {
+                if (parseInt(tableBody.rows[i].cells[0].innerText) === deleteNumber) {
+                    const area = parseFloat(tableBody.rows[i].cells[4].innerText);
+                    totalArea -= area;
+                    tableBody.deleteRow(i);
+                    document.getElementById("totalArea").innerText = totalArea.toFixed(2) + " м²";
+                    return;
+                }
+            }
+            alert("Номер не найден!");
+        }
+    </script>
+</body>
+</html>
